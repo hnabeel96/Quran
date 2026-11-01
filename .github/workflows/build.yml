@@ -1,0 +1,57 @@
+name: Build APK
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['README.md', 'tools/**', '.github/workflows/fetch-data.yml']
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Fetch data"]
+    types: [completed]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Ensure Qur'an font
+        run: |
+          mkdir -p app/src/main/res/font
+          if [ ! -s app/src/main/res/font/amiri_quran.ttf ]; then
+            curl -fsSL -o app/src/main/res/font/amiri_quran.ttf \
+              https://github.com/google/fonts/raw/main/ofl/amiriquran/AmiriQuran-Regular.ttf
+          fi
+          ls -la app/src/main/res/font app/src/main/assets
+
+      - name: Build release APK
+        run: gradle :app:assembleRelease --no-daemon
+
+      - name: Rename APK
+        run: cp app/build/outputs/apk/release/app-release.apk murajaah-${{ github.run_number }}.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: murajaah-apk
+          path: murajaah-${{ github.run_number }}.apk
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: Muraja'ah build ${{ github.run_number }}
+          files: murajaah-${{ github.run_number }}.apk
+          make_latest: true

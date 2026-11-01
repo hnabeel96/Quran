@@ -1,0 +1,36 @@
+name: Fetch data
+
+# Pulls word-by-word English meanings (Quran.com API) and the Amiri Quran font,
+# then commits them into the app's assets. Runs on demand or when the script changes.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['tools/fetch_wbw.py', '.github/workflows/fetch-data.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Font
+        run: |
+          mkdir -p app/src/main/res/font
+          curl -fsSL -o app/src/main/res/font/amiri_quran.ttf \
+            https://github.com/google/fonts/raw/main/ofl/amiriquran/AmiriQuran-Regular.ttf
+          ls -la app/src/main/res/font
+      - name: Word-by-word meanings
+        run: python tools/fetch_wbw.py
+      - name: Commit
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add app/src/main/assets/wbw.json app/src/main/res/font/amiri_quran.ttf
+          git diff --cached --quiet || git commit -m "Update word-by-word data and font"
+          git push

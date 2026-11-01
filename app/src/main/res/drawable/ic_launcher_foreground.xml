@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- An open book on a stand, with a gold ribbon -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <path android:fillColor="#E9DFC6"
+        android:pathData="M54,40 C46,34 36,33 30,34 L30,66 C37,65 46,66 54,72 Z" />
+    <path android:fillColor="#F4ECD8"
+        android:pathData="M54,40 C62,34 72,33 78,34 L78,66 C71,65 62,66 54,72 Z" />
+    <path android:fillColor="#C9A55C"
+        android:pathData="M53,40 L55,40 L55,74 L53,74 Z" />
+    <path android:fillColor="#C9A55C"
+        android:pathData="M60,36 L64,35.4 L64,52 L62,50 L60,52 Z" />
+    <path android:strokeColor="#9C8A63" android:strokeWidth="1.2"
+        android:pathData="M35,44 L48,46 M35,50 L48,52 M35,56 L48,58 M60,46 L73,44 M60,58 L73,56" />
+    <path android:fillColor="#C9A55C"
+        android:pathData="M34,74 L54,78 L74,74 L76,77 L54,82 L32,77 Z" />
+</vector>
